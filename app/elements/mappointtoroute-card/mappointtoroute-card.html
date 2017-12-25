@@ -1,0 +1,172 @@
+<link rel="import" href="../../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../../bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
+<link rel="import" href="../../bower_components/paper-item/paper-item.html">
+<link rel="import" href="../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../../bower_components/paper-styles/paper-styles.html">
+<script src="../../bower_components/webcomponentsjs/webcomponents-lite.js"></script>
+<link rel="import" href="../../bower_components/iron-pages/iron-pages.html">
+<link rel="stylesheet" type="text/css" href="../../styles/styles.css">
+<link rel="import" href="../timepicker-card/timepicker-card.html">
+<link rel="import" href="../timepicker1-card/timepicker1-card.html">
+<link rel="import" href="../fetch-card/fetch-card.html">
+<link rel="import" href="../item-card/item-card.html">
+<link rel="import" href="../transport-service/transport-service.html">
+<dom-module id="mappointtoroute-card">
+  <template>  
+    <style> 
+      .card
+      {
+        width:50%;
+        height:150px;
+        margin-left: 14%;
+        background-color: white; 
+        box-shadow: 0 0 3px 3px rgb(184, 209, 249); -moz-box-shadow: 0 0 3px 3px rgb(184, 209, 249); -webkit-box-shadow: 0 0 3px 3px gb(184, 209, 249); -o-box-shadow: 0 0 3px 3px rgb(184, 209, 249); 
+      }
+      paper-dropdown-menu
+      {
+       margin-left: 9%;
+        margin-top: 3%; 
+      }
+
+    </style>
+    <body>
+      <div class="dupframe">
+        <div class="card">
+          <paper-dropdown-menu label="Route" id="route" required  errorMessage ="please select the route" >
+            <paper-menu id="routemenu" class="dropdown-content" on-iron-select="rootname" valueattr="value" >
+              <template  is="dom-repeat" items="{{routearr}}" as="view">
+                <paper-item value="{{view.id}}">{{view.route_name}}</paper-item>
+              </template>
+            </paper-menu>
+          </paper-dropdown-menu>
+          <paper-dropdown-menu label="Trip" id="tripnoo" required error-message="select the trip">
+            <paper-menu id="tripmenu" class="dropdown-content" on-iron-select="tripnum" valueattr="value"  >
+              <paper-item value="1">1</paper-item>
+              <paper-item value="2">2</paper-item>
+              
+            </paper-menu>
+          </paper-dropdown-menu>
+        </div>
+        <div hidden$="{{hide11}}">
+          <template  is="dom-repeat" items="{{itemarr}}">
+            <fetch-card points="{{item.point_name}}" distance="{{item.distance_from_school}}" trip="{{item.trip}}" picktime="{{item.pickup_time}}" droptime="{{item.drop_time}}" pointid="{{item.id}}"  routid="{{item.route_id}}" pickseq="{{item.pickup_seq}}" dropseq="{{item.drop_seq}}"></fetch-card>
+          </template>
+        </div>
+        <div id="cardnew" hidden$="{{hide}}">
+          <item-card></item-card>
+        </div>   
+        <div class="buttons">  
+          <paper-button id="button" class="button" on-click="Fndeletepoint">Delete</paper-button>
+          <paper-button id="create" class="button" on-click="clickfn">Create New</paper-button>
+        </div>
+      </div>
+    </body>
+  <transport-service id="select"></transport-service>
+  </template>
+  <script>
+    (function() { 
+      var routename="";
+      var pointarray=[];
+      var detailarr=[];
+      var tripno="";
+        var routevalue1;
+        Polymer({
+          is: "mappointtoroute-card",
+          ready:function(){ 
+            this.hide=true;
+            this.$.button.hidden=true;
+            this.$.create.hidden=true;   
+            //this.$.select.getroute();
+          },
+          FnClear:function()
+          {
+            this.$.routemenu.selected=-1;
+            this.$.tripmenu.selected=-1;
+            this.itemarr=[];
+   
+          },
+          rootname:function(e){
+            routename = (e.target.selectedItem.textContent).trim();
+            routevalue1=e.target.selectedItem.value;
+         //   alert(routevalue1);
+            this.$.select.gettrip(routename,routevalue1);
+            sessionStorage.setItem("route",routename);
+            sessionStorage.setItem("routevalue",routevalue1);
+            this.$.tripmenu.selected=-1;
+        
+          },
+          tripnum:function(e){
+            tripno=(e.target.selectedItem.textContent).trim();
+            this.$.select.getroutedetail(tripno,routevalue1);
+            sessionStorage.setItem("trip",tripno);
+            this.$.create.hidden=false;
+              this.hide11=false;
+     
+          },
+         refz:function(e){
+      this.$.select.getroutedetail(tripno,routevalue1);
+      
+          },
+          fndeletethepicuprootref:function(e){
+          this.$.select.getroutedetail(tripno,routevalue1);
+          },
+          refreshdeletedata:function()
+          {
+             this.$.select.getroutedetail(tripno,routevalue1);
+             this.hide11=false;
+             this.hide=true;
+          
+
+           },
+          Fndeletepoint:function()
+          {
+             if(tripno=="")
+          {
+         this.$.route.validate();
+         this.$.tripnoo.validate();
+         }
+         else if(pointarray.length>0)
+          {
+            this.$.select.deletemappoint(pointarray,routename,tripno);
+          }
+         else
+          {
+            alert("No CheckBox is Checked");
+          } 
+          },
+          clickfn:function(){
+             if(tripno==""){
+              this.$.route.validate();
+              this.$.tripnoo.validate();
+            } else {
+              this.hide=false;
+              this.hide11=false;
+                this.$.select.getroutedetail(tripno,routevalue1);
+  
+     
+
+            }
+          },
+          FnGetpoints:function(points,checktype){
+            if(checktype=="true"){
+              pointarray.push(points);
+            } else {
+              var i = pointarray.indexOf(points);
+              if(i != -1) {
+                pointarray.splice(i, 1);
+              }
+            }
+            
+          },
+          fn1:function(e){
+        //    alert('1')
+           this.hide11=true;
+          }
+
+        });
+    })();
+    </script>
+</dom-module>
+
+

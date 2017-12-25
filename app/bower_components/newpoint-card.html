@@ -1,0 +1,132 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/paper-item/paper-item.html">
+<link rel="import" href="../bower_components/paper-card/paper-card.html">
+<link rel="import" href="../bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
+<link rel="import" href="../bower_components/paper-menu/paper-menu.html">
+<link rel="import" href="../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="login-service.html">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<dom-module id="newpoint-card">
+
+  <template>
+  <div class="ggh">
+    <div class="select">
+      <div  class="route">
+        <paper-item>Create_point</paper-item>
+      </div>
+      <div class="drop-down">
+        <paper-item class="la">Select the Zone</paper-item>
+        <paper-dropdown-menu>
+          <paper-menu class="dropdown-content" on-iron-select="zone" valueattr="value" >
+            <template  is="dom-repeat" items="{{itemarr}}" as="view">
+              <paper-item value="{{view.zone_id}}">{{view.zone_id}}</paper-item>
+             </template>
+          </paper-menu>
+        </paper-dropdown-menu>
+      </div>
+      <div class="drop-down">
+        <paper-item class="la">Select the Route</paper-item>
+        <paper-dropdown-menu>
+          <paper-menu class="dropdown-content"  on-iron-select="route" valueattr="value" >
+           <template  is="dom-repeat" items="{{pickarr}}" as="view">
+              <paper-item value="{{view.route_id}}">{{view.route_id}}</paper-item>
+             </template>
+          </paper-menu>
+        </paper-dropdown-menu>
+      </div>
+      <div class="text-field">
+        <paper-item class="la">Enter the New Pick-up Point</paper-item>
+         <paper-input label="" value="{{newPickpnt}}"> </paper-input>
+      </div>
+      <div class="button">
+        <paper-button raised class="custom indigo" on-click="click">Create</paper-button>
+      </div>
+  </div>
+  </div>
+  <login-service id="select"></login-service>
+  </template>
+ <script>
+(function() {
+    var zone="";
+    var route="";
+    
+    Polymer({
+      is: "newpoint-card",
+      ready:function()
+      {
+        
+        this.$.select.selectzone();
+      },
+      zone:function(e)
+      {
+        
+        zone = (e.target.selectedItem.textContent).trim();
+        this.$.select.selectroute(this.zone);
+       
+      },
+
+      route:function(e)
+      {
+        route = (e.target.selectedItem.textContent).trim();
+        
+        },
+
+      click:function()
+      {
+        //alert('clicked');
+        this.$.select.newroute(route,this.newPickpnt);
+        //alert(this.newPickpnt);
+      }
+        });
+      
+      
+      
+});
+  </script>
+
+  <style is="custom-style">
+  .field{
+    padding: 0% 2% 0 2%; 
+    text-align: center;
+  }
+  .button{
+    padding:2% 0 2% 0; 
+    text-align: center;
+  }
+  .ggh{
+    padding: 0% 0% 0% 25%;
+  }
+  .drop-down .la{
+    width: 45%;
+    display: inline-block;
+  }
+  .route{
+    text-align: center;
+  }
+  .drop-down .dropdown-content{
+    display: inline-block;
+     @apply(--layout-horizontal);
+  }
+
+  .select{
+    margin-top: 70px;
+    width: 65%;
+    background-color: #EAE8E7;
+    display: inline-block;
+    @apply(--layout-center);
+              border-radius: 2px;
+              box-shadow: rgba(0, 0, 0, 0.0980392) 0px 2px 4px, rgba(0, 0, 0, 0.0980392) 0px 0px 3px;
+    padding:5px;
+  }
+  paper-button.indigo {
+    background-color: #565656;
+    color: white;
+    --paper-button-raised-keyboard-focus: {
+      background-color: var(--paper-pink-a200) !important;
+      color: white !important;
+    };
+  }
+</style>
+</dom-module>

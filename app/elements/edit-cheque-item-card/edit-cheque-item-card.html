@@ -1,0 +1,80 @@
+<!--
+@license
+Copyright (c) 2015 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<link rel="import" href="..\..\bower_components/polymer/polymer.html">
+
+<dom-module id="edit-cheque-item-card">
+  <template>
+    <style>
+      :host {
+        display: block;
+      }
+      .horizontalframe
+  {
+
+        @apply(--layout-horizontal);
+      }
+
+  
+  .ebutton
+  {
+    margin-top: 2%;
+  }
+    </style>
+     <div  class="horizontalframe">
+      
+        <div class="fields" style="margin-left: 1%;">
+          <paper-item>{{installtype1}}</paper-item>
+        </div>
+        <div class="fields" style="margin-left: 1%;">
+          <paper-item>{{installamt1}}</paper-item>
+        </div>
+        <div class="fields" style="margin-left: 1%;">
+          <paper-item>{{paytype1}}</paper-item>
+        </div>
+        <div class="fields" style="margin-left: 0.5%;">
+          <paper-input value="{{chequenum1}}"></paper-input>
+        </div>
+        <div class="fields" style="margin-left: 1%;">
+          <paper-input value="{{bankname1}}"></paper-input>
+        </div>
+        <div class="fields" style="margin-left: 1%;">
+          <paper-input value={{chequedate1}}></paper-input>
+        </div>
+         
+         <paper-button class="ebutton" id="{{prevcheque}}" name="{{stuid}}" on-click="editcheque">Edit</paper-button>
+          <paper-button class="ebutton" id="{{prevcheque}}" name="{{stuid}}"  on-click="deletecheque">Delete</paper-button>
+      
+ <transport-service id="service"></transport-service>
+      </div>
+  </template>
+  <script>
+  (function() {
+    'use strict';
+
+    Polymer({
+      is: 'edit-cheque-item-card',
+
+     editcheque:function()
+      {
+        //alert('edit1'+this.chequedate1+''+this.bankname1+''+this.chequenum1+''+this.prevcheque+''+this.stuid);
+        this.$.service.Fneditcheque(this.chequenum1,this.bankname1,this.chequedate1,this.prevcheque,this.stuid);
+        alert("Update the cheque details Successfully");
+       // alert(this.stuid);
+      },
+      deletecheque:function()
+      {
+        this.$.service.Fndeletecheque(this.prevcheque,this.stuid,this.installtype1);
+        alert("Delete the cheque details Successfully");
+      }
+    });
+  })();
+  </script>
+</dom-module>

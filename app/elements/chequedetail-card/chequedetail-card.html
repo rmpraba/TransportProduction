@@ -1,0 +1,267 @@
+
+
+<link rel="import" href="..\..\bower_components/polymer/polymer.html">
+<link rel="import" href="../transportfee-service/transportfee-service.html">
+<link rel="import" href="../chequedetail-list/chequedetail-list.html">
+<link rel="import" href="../fchequedatepicker-card/fchequedatepicker-card.html">
+<link rel="import" href="../tchequedatepicker-card/tchequedatepicker-card.html">
+<dom-module id="chequedetail-card">
+  <template>  
+    <style>
+      :host {
+        display: block;
+      }
+      .centerbutton
+      {
+        
+        margin-left: 45%;
+        margin-top:4%;
+      }
+      
+      .horizontalframe
+      {
+        @apply(--layout-horizontal);
+        margin-left: 26%;
+        margin-top: 4%;
+
+      }
+      .horizontalframe
+      {
+         width:50%;
+        height:150px;
+        border: solid 1px #555; 
+        background-color: white; 
+       box-shadow: 0 0 3px 3px rgb(184, 209, 249); -moz-box-shadow: 0 0 3px 3px rgb(184, 209, 249); -webkit-box-shadow: 0 0 3px 3px gb(184, 209, 249); -o-box-shadow: 0 0 3px 3px rgb(184, 209, 249); 
+      }
+      
+
+    </style>
+    <div class="horizontalframe">
+     <div><fchequedatepicker-card id="dp"></fchequedatepicker-card></div>
+     <div><tchequedatepicker-card></tchequedatepicker-card></div>
+     <paper-button style="height: 100px;margin-top: 4%;"  id="but" class="button" on-click="search">Search</paper-button>
+   
+   <div class="hrspace">
+      <p style="margin:40px 0 0 36px;">OR</p>
+   </div>
+    <div class="hrspace" style="margin:40px 0 0 34px;">
+      <paper-checkbox id="selectbox" on-change="changeHandler">Select by Name</paper-checkbox>
+    </div>
+    </div>
+    <div id="search">
+            <paper-input label="Enter Student ID/Class ID/Student Name" value="{{value}}" on-keydown="FnInputChanged"></paper-input>
+            <paper-listbox id="itemlist" class="dropdown-content" on-iron-select="FnItemSelected">
+              <template is="dom-repeat" items="{{itemArray}}" as="item">
+                <paper-item value="{{item.itemid}}">{{item.itemdes}}</paper-item>
+              </template>
+            </paper-listbox>
+          </div>
+    <div class="collapse1" hidden$="{{hideheadinfo}}">
+          <paper-tabs>
+            <paper-tab >ID</paper-tab>
+            <paper-tab>Name</paper-tab>
+            <paper-tab>Cheque No</paper-tab>
+            <paper-tab>Bank Name</paper-tab>
+            <paper-tab>Date</paper-tab>  
+            <paper-tab>Cheque Cleared</paper-tab>
+          </paper-tabs>
+      </div>
+      <div class="collapse1" hidden$="{{hidestudentinfo}}">
+     <template  is="dom-repeat" items="{{chequearr}}" as="view">
+      <chequedetail-list studid="{{view.studid}}" name="{{view.sname}}" chequeno="{{view.chequeno}}" bankname="{{view.bankname}}" cdate="{{view.cdate}}" cstatus="{{view.cstatus}}" installtype="{{view.installtype}}"></chequedetail-list>
+    </template>
+    <div class="centerbutton">
+    <paper-button id="button"  on-click="accept">Submit</paper-button></div>
+    </div>
+    
+    <transportfee-service id="service"></transportfee-service>
+  </template>
+  <script>
+  (function() {
+    var chqdetail=[];
+    var fromdate;
+    var todate;
+    var namearr;
+    Polymer({
+      is: 'chequedetail-card',
+ready:function()
+{
+  this.$.search.hidden=true;
+  this.$.button.hidden=true;
+  this.$.service.generateseq();
+  this.hidestudentinfo=true;
+  this.hideheadinfo=true;
+  //this.$.service.checkchequedetails();
+},
+refreshchequedetail:function()
+{
+         this.$.search.hidden=true;
+          this.chequearr=[];
+          this.$.button.hidden=true;
+          this.value="";
+  },
+//this.$.service.checkchequedetails();
+showfromcheque:function(showdate1)
+{
+  fromdate=showdate1;
+},
+showtocheque:function(showdate2)
+{
+  todate=showdate2;
+},
+ search:function()
+ {
+// alert('1');
+ this.$.service.checkchequedetails(fromdate,todate);
+ this.$.button.hidden=false;
+ this.hidestudentinfo=false;
+ this.hideheadinfo=false;
+ },
+Fnchequedetail:function(chequedetail)
+{
+ chqdetail=chequedetail;
+ for(var i=0;i<chqdetail.length;i++)
+  {
+    chqdetail[i].cheque_status="cleared";
+  }
+ 
+},
+FnChangestatus:function(chqid,st)
+{
+  
+  for(var i=0;i<chqdetail.length;i++)
+  {
+    if(chqdetail[i].cheque_no==chqid)
+    {
+      chqdetail[i].cheque_status=st;
+    }
+  }
+},
+changeHandler:function(e){
+       if(e.target.checked==true)
+        {
+          this.chequearr=[];
+          this.$.search.hidden=false;
+          
+          document.querySelector('fchequedatepicker-card').readonlydate();
+          document.querySelector('tchequedatepicker-card').readonlydate();
+          //this.$.maps.selectname();
+          //this.studentarr=[];
+          //document.querySelector('#gradeselect').selected=-1;
+          //document.getElementById("submitbutton").style.background="grey";
+
+        }
+        else
+        {
+          this.$.search.hidden=true;
+          document.querySelector('fchequedatepicker-card').enabledate();
+          document.querySelector('tchequedatepicker-card').enabledate();
+          this.chequearr=[];
+          this.$.button.hidden=true;
+          this.value="";
+
+        }
+
+        },
+ autocompletename(nameitem){
+          namearr=nameitem;
+          //alert(namearr);
+        },
+        FnInputChanged:function(e){
+          this.chequearr=[];
+          if(e.keyCode==13|| e.keyCode==40)
+            this.querySelector('paper-listbox').focus();
+          var arr=[];
+          arr.push({"itemdes":"-----Select-----"});
+          this.querySelector('paper-listbox').style.visibility='visible';
+          if(e.keyCode==8){
+            this.itemflag="true";
+            this.itemval="";
+            //alert('yes');
+            var len=(this.value).length;
+            if(len<=1){
+              this.querySelector('paper-listbox').style.visibility='hidden';
+              this.itemArray="";
+              this.itemval="";
+            }
+            if(len>1){
+              this.querySelector('paper-listbox').style.visibility='visible';
+              var backsubval=(((this.value).substring(0,(len-1))).trim()).toUpperCase();
+               for(var i=0;i<namearr.length;i++)
+          {
+            //var subval=((namearr[i].student_name).trim()).substring(0,backsubval.length);
+            if((namearr[i].student_name).toUpperCase().indexOf((this.value).toUpperCase())!=-1)
+            {
+              var obj={"itemdes":"","itemid":""};
+              obj.itemdes=namearr[i].student_name;
+              obj.itemid=namearr[i].student_id;
+              arr.push(obj);
+            }
+          }
+              this.itemArray=arr;
+            }
+          }
+          if(e.keyCode!=8&& e.keyCode!=16&& e.keyCode!=13 && e.keyCode!=38&&e.keyCode!=40&&e.keyCode!=37&&e.keyCode!=39){
+            if(this.itemflag=="true") {
+              this.itemval = (this.value).toUpperCase()+String.fromCharCode((e.keyCode)).toUpperCase();
+              this.itemflag="false";
+            }
+            else
+            this.itemval = this.value +String.fromCharCode((e.keyCode));
+            if(this.itemval.length>0)
+            {
+              for(var i=0;i<namearr.length;i++)
+          {
+
+            var subval=((namearr[i].student_name).trim()).substring(0,this.itemval.length);
+          //var subval=((namearr[i].student_name).trim()).substring(0,backsubval.length);
+            if((namearr[i].student_name).toUpperCase().indexOf((this.itemval).toUpperCase())!=-1)
+            {
+              var obj={"itemdes":"","itemid":""};
+              obj.itemdes=namearr[i].student_name;
+              obj.itemid=namearr[i].student_id;
+              arr.push(obj);
+            }
+          }
+              if(arr.length>0)
+                this.itemArray=arr;
+              else {
+                var obj={"itemdes":"","itemid":""};
+                  obj.itemdes=namearr[i].student_name;
+                  obj.itemid=namearr[i].id;
+                  arr.push(obj);
+                this.itemArray=arr;
+              }
+            }
+          }
+        },
+        FnItemSelected:function(e1)
+        {
+          this.$.button.hidden=false;
+          this.hidestudentinfo=false;
+          this.hideheadinfo=false;
+          this.studid= e1.target.selectedItem.value;
+          var studname = (e1.target.selectedItem.textContent).trim();
+          this.value=studname;
+          //alert(this.studname);
+          this.$.service.checkchequebyname(studname);
+          this.itemArray=[];
+          this.querySelector('paper-listbox').selected=-1;
+        },
+     accept:function()
+      {
+        alert('Cheque Details are Updated Sucessfully');
+        this.$.service.updatechequedetail(chqdetail);
+        this.$.service.bouncechequedetail(chqdetail);
+        this.$.service.updatestudentcheque(chqdetail);
+       for(var i=0;i<chqdetail.length;i++)
+        {
+       //this.$.service.updatechequedetail(chqdetail[i].cheque_status,chqdetail[i].cheque_no,chqdetail[i].installtype,chqdetail[i].student_id);
+        }
+
+       this.chequearr=[];
+      }
+    });
+  })();
+  </script>
+</dom-module>

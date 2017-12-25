@@ -1,0 +1,57 @@
+
+<link rel="import" href="../../bower_components/iron-pages/iron-pages.html">
+<link rel="import" href="../../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../../bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="../transport-app/transport-app.html">
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../login-card/login-card.html">
+<link rel="import" href="../../bower_components/iron-ajax/iron-ajax.html">
+
+
+<dom-module id="app-card">
+<template>
+  <span id="browser-sync-binding"></span>
+        <iron-pages selected="{{page}}" attr-for-selected="data-category">
+        <section data-category="loginpage">
+          <login-card></login-card>
+        </section>
+        <section data-category="transportapp">
+          <transport-app></transport-app>
+        </section>
+           </iron-pages>
+            <iron-ajax
+        auto
+        id="addressajax"
+        url="../../configfile/address.json"
+        handle-as="json"
+        content-type="application/json"
+        on-response="addressResponse"
+        debounce-duration="300"
+        >
+  </iron-ajax>
+           </template>
+  <!-- build:js scripts/app.js -->
+  
+<script>
+  Polymer({
+    is: "app-card",
+    ready: function() 
+    {
+    this.$.addressajax.generateRequest();
+    
+      this.page="loginpage";
+    
+  },
+  addressResponse:function(e)
+      {
+        var addr=e.detail.response.address;
+        sessionStorage.setItem("addrinfo",addr);
+        //alert(JSON.stringify(e.detail.response.address));
+      },
+  setPage:function(page)
+    {
+     this.page=page;
+    }
+  });
+  </script>
+</dom-module>

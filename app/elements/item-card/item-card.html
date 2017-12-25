@@ -1,0 +1,143 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/paper-item/paper-item.html">
+<link rel="import" href="../../bower_components/paper-card/paper-card.html">
+<link rel="import" href="../../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../../bower_components/paper-menu/paper-menu.html">
+<link rel="import" href="../../bower_components/paper-checkbox/paper-checkbox.html">
+<link rel="import" href="../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../../bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
+<link rel="import" href="../login-card/login-card.html">
+<link rel="import" href="../../timepicker-card/timepicker-card.html">
+<link rel="import" href="../../timepicker1-card/timepicker1-card.html">
+<link rel="import" href="../transport-service/transport-service.html">
+<link rel="stylesheet" type="text/css" href="../../styles/styles.css">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<dom-module id="item-card">
+   <style>
+   .layout1{
+ width: 100%;
+   margin-left: 2%;
+ }
+ .row
+ {
+  @apply(--layout-horizontal);
+ }
+
+    </style>
+<template>
+  <legend align="center"></legend>
+    <ul>
+      <li class="rows" style="margin-top: 3%;">
+        <fieldset>
+          <ul class="rowss">
+           
+            <li class="row">
+              <div class="detail">
+                <div class="layout">
+                  <paper-input label="Point" id="pt" class="field" required error-message="needs Point Name!" value={{points}}></paper-input>
+                </div>
+              </div>
+
+              <div class="detail"> 
+                <div class="layout">
+                 <paper-input label="distance" id="dist" required allowed-pattern="[0-9]" class="field"  error-message="needs Distance!" value={{distance}}></paper-input>
+                </div>
+              </div>
+            </li>
+            <li class="row" style="margin-top: -3%;">
+              <div class="date" style="margin-left: -7%;width: 46%;">
+                <!-- <div class="layout"> -->
+                  <timepicker-card></timepicker-card>
+                <!-- </div> -->
+              </div>
+
+              <div class="date" style="margin-left: 4%;width: 47%;"> 
+                <!-- <div class="layout"> -->
+                  <timepicker1-card></timepicker1-card>
+                <!-- </div> -->
+              </div>
+            </li>
+            
+            <li class="row">
+              <div class="detail">
+                <div class="field">
+                  <paper-input label="Pickup Sequence"  allowed-pattern="[0-9]" required error-message="needs Pickup Sequence!" value="{{pickupseq}}" id="mstppickseq"></paper-input>
+                </div>
+              </div>
+
+              <div class="detail">
+                <div class="field">
+                  <paper-input label="Drop Sequence"  allowed-pattern="[0-9]" required error-message="needs Drop Sequence!" value="{{dropseq}}" id="mstpdropseq"></paper-input>
+                </div>
+              </div>
+            </li>
+            <li class="row">
+              <div class="detail">
+                <div class="field">
+                  <paper-button id="new-button" class="button item-card" on-click="insert">Add</paper-button>
+                </div>
+              </div>
+            </li>
+            
+          </ul>
+        </fieldset>
+      </li>
+    </ul>
+  <paper-input hidden="true" value="{{routen}}"></paper-input>
+  <transport-service id="insert"></transport-service>
+</template>
+<script>
+  (function() {
+    var n=0;
+    var itemarr=[];
+    var rout=this.routen;
+    Polymer({
+      is: "item-card",
+      ready:function(){
+        n=n+1;
+      },
+      insert:function(e)
+      {
+        //alert(111111);
+        if(this.points=="" || this.distance=="" || this.pickupseq=="" || this.dropseq=="" )
+        {
+           /*this.$.pt.validate();
+           this.$.dist.validate();
+           this.$.mstppickseq.validate();
+           this.$.mstpdropseq.validate();*/
+           alert('Pease Enter all the fields');
+        }
+  else
+        {
+       // alert('Add button is clicked');
+          var route=sessionStorage.getItem("route");
+          var tripn=sessionStorage.getItem("trip");
+          //alert(route+""+this.points+""+pickuptime+""+droptime+""+tripn+""+this.distance+""+this.pickupseq+""+this.dropseq);
+            this.$.insert.insertpoint(route,this.points,localStorage.getItem("curr_sess_pickuptime"),localStorage.getItem("curr_sess_droptime"),tripn,this.distance,this.pickupseq,this.dropseq);
+          this.points="";
+          this.distance="";
+          this.pickupseq="";
+          this.dropseq="";
+          document.querySelector('timepicker-card').fnrefresh();
+          document.querySelector('timepicker1-card').FnClear();
+          document.querySelector('mappointtoroute-card').refz();
+        
+          //this.points="";
+          //this.distance="";   
+       // document.querySelector('mappointtoroute-card').FnClear();
+
+        }
+      },
+      Fnclear:function()
+      {
+        this.points="";
+        this.distance="";
+        this.pickupseq="";
+        this.dropseq="";
+      }
+    });
+  })();
+</script>
+</dom-module>

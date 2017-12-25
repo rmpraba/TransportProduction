@@ -1,0 +1,365 @@
+
+<link rel="import" href="..\..\bower_components/polymer/polymer.html">
+<link rel="import" href="..\..\bower_components/paper-item/paper-item.html">
+<link rel="import" href="..\..\bower_components/paper-input/paper-input.html">
+<link rel="import" href="..\..\bower_components/paper-button/paper-button.html">
+<link rel="import" href="..\..\bower_components/paper-checkbox/paper-checkbox.html">
+<link rel="import" href="..\..\bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="../transport-service/transport-service.html">
+<link rel="stylesheet" type="text/css" href="../../styles/styles.css">
+<link rel="import" href="../mapstudenttopoint-service/mapstudenttopoint-service.html"><script type="text/javascript" src="http://code.jquery.com/jquery-1.6.2.js"></script>
+      <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.14/jquery-ui.js"></script>
+      <script type="text/javascript" src="http://mrrio.github.io/jsPDF/dist/jspdf.debug.js"></script>
+      <script type="text/javascript" src="http://html2canvas.hertzen.com/build/html2canvas.js"></script>
+
+<style type="text/css">
+  .horlayout    
+  {
+      @apply(--layout-horizontal);
+  }
+  .left
+  {
+    top: 1px;
+  }
+  .itemcards:nth-child(odd){
+    margin-top: -2.0%;
+  }
+  .itemcards:nth-child(even){
+    padding-bottom:10px;
+  }
+  @media print {
+    .itemcards:nth-child(even){page-break-after: always;}
+  }
+ </style>
+<dom-module id="studentpass-card">
+  <template  style="margin-top:-0.5% !important;">
+  <div class="student-image" >
+   <img id="imgRes">
+  </div>
+   
+    <div class="left">   
+      <paper-input id="text" class="field" label="Student Name" is="" value="{{value}}" on-keydown="FnInputChanged"></paper-input>
+      <paper-listbox class="dropdown-content" id="fetchname" on-iron-select="FnItemSelected">
+        <template is="dom-repeat" items="{{itemArray}}" as="item">
+          <paper-item>{{item.itemdes}}</paper-item>
+        </template>
+      </paper-listbox>
+       <div>
+       <paper-button style="margin-left:94%;background:#252626;
+       color: white;" id="print" on-click="print">Print</paper-button>
+         </div>
+      <paper-checkbox id="selectgradebox" class="checkbox" on-change="changehandler">Select by Grade</paper-checkbox>
+
+      <div id="selectclass">
+        <paper-dropdown-menu   label="Select Grade">
+          <paper-menu class="dropdown-content" id="gradeselect" on-iron-select="class" attr-for-selected="value" >
+              <template is="dom-repeat" items="{{classarr}}" as="item">
+                  <paper-item value="{{item.class}}">{{item.class}}</paper-item>
+              </template>
+           </paper-listbox>
+          </paper-menu>
+        </paper-dropdown-menu>
+      </div>
+
+      </div>
+<div id="passtemp">
+       <template  is="dom-repeat" items="{{passarr1}}" as="view">
+      
+      <div class="itemcards">
+        <passtemplate-card schoolname="{{view.schoolname}}" schooladdr="{{view.schooladdr}}" sid="{{view.stid}}" studname="{{view.stname}}" stnd="{{view.stnd}}" sec="{{view.sec}}" zone="{{view.zonename}}" parent="{{view.dad1}}" address1="{{view.add1}}" address2="{{view.add2}}" address3="{{view.add3}}" town="{{view.add4}}" pin="{{view.pin}}" pickuprout="{{view.pickr}}" pickup="{{view.pickp}}" droprout="{{view.dropr}}" drop="{{view.dropp}}" mobno="{{view.mob}}" conumber="{{view.conumber}}" classidz="{{val}}">
+       </passtemplate-card>
+      </div>
+    </template>
+</div>
+
+
+<div id="pass" class="pass">
+  <div id="canvas" style="background-image:url(fimage/1.jpg)">
+    <div class="horlayout">
+      <div class="front">
+        <div class="header">
+          <div class="logo"><img style="width: 18%; height: 12%; margin-top: 5%;" src="../../images/zeesouth.png"/>
+          </div>
+          <div class="heading">
+            <div class="title">{{schoolname}}</div>
+            <div class="address">{{schooladdr}}</div>
+          </div>
+        </div>
+        <div class="body2">
+          <div class="studimg">
+            <img style="min-height: 12%;min-width: 18%; margin-top: 5%; height: 18%; width: 27%;border: 1px solid;" src="images/{{sid}}.jpg" alt="Paste photo here"/>
+          </div>
+          <div class="studetail"> 
+          <p style="font-size: 14px;">{{studname}}</p>
+          <p style="font-size: 12px;">Class-{{classid}}</p>
+          <p style="font-size: 12px;">Zone- {{zone}}</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="back">
+        <div class="body3">
+          <div class="backimg">
+            <div class="backdetails">
+              <p style="font-size: 13px;"><strong>Address:</strong>
+                  S/O,{{parent}},
+                  {{address1}},
+                  {{address2}},
+                  {{address3}}, 
+                  {{town}}-{{pin}}.
+              </p>
+                <hr>
+              <div>
+                <p style="margin: 4px 0 4px 0; display: inline;font-size: 13px;font-weight: bold;">Pickup Route:</p>
+                <p style="margin: 4px 0 4px 0;text-transform: capitalize; display: inline;font-size: 12px;">{{pickuprout}}</p>
+              </div>
+              <div>
+                <p style="margin: 4px 0 4px 0; display: inline;font-weight: bold;font-size: 13px;">Pickup Point:</p>
+                <p style="margin: 4px 0 4px 0;text-transform: capitalize; display: inline;font-size: 12px;">{{pickup}}</p>
+              </div>
+              <div>
+                <p style="margin: 4px 0 4px 0; display: inline;font-weight: bold;font-size: 13px;">Drop Route:</p>
+                <p style="margin: 4px 0 4px 0;text-transform: capitalize; display: inline;font-size: 12px;">{{droprout}}</p>
+              </div>
+              <div>
+                <p style="margin: 4px 0 4px 0; display: inline;font-weight: bold;font-size: 13px;">Drop Point:</p>
+                <p style="margin: 4px 0 4px 0;text-transform: capitalize; display: inline;font-size: 12px;">{{drop}}</p>
+              </div>
+                <hr>
+                <div>
+                  <strong>Parents Mob:</strong> {{mobno}}
+                </div>
+                  <hr>
+                <div>
+                  <strong>Transport Coordinator no:</strong>{{cordinatono}}
+                </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+   
+  </div>
+     <transport-service id="root"></transport-service>
+     <mapstudenttopoint-service id="maps"></mapstudenttopoint-service>
+    
+  </template>
+  <script>
+  
+
+
+
+  (function() {
+    'use strict';
+    var namearr=[];
+    var num;
+    
+    Polymer({
+      is: 'studentpass-card',
+    ready:function(){
+        this.schoolname=sessionStorage.getItem("schoolname");
+        this.schooladdr=sessionStorage.getItem("schooladdr");
+        this.querySelector('paper-listbox').style.visibility='hidden';
+        this.$.selectclass.hidden=true;
+        this.$.passtemp.hidden=true;
+      },
+    
+      callnumberservice:function(){
+        this.$.numberreadajax.generateRequest();
+      },
+      numberreadResponse:function(e){
+        var no=e.detail.response
+        this.coorno=no[0].conumber;
+      },
+      Fnrefresh:function(){
+        this.studname="";
+        this.stnd="";
+        this.sec="";
+        this.mobno="";
+        this.blood="";
+        this.value="";
+        this.itemArray="";
+        this.sid="";
+        this.parent="";
+        this.address1="";
+        this.address2="";
+        this.town="";
+        this.pin="";
+        this.pickup="";
+        this.drop="";
+        this.pickuprout="";
+        this.droprout="";
+        this.cordinatono="";
+        this.classid="";
+          this.$.pass.hidden=false;
+          document.querySelector('#selectgradebox').checked=false;
+           this.$.text.hidden=false;
+            document.querySelector('#gradeselect').selected=-1;
+          this.zone="";
+           this.passarr1=[];
+           this.studname="";
+       
+      },
+       email:function(e){
+              //alert('sending email');
+            //window.location.href="mailto:kartiksubu.krs@gmail.com?subject=pass"+document.title+"&body=.pass"+escape(window.location.href);
+            var link = 'mailto:kartiksubu.krs@gmail.com?subject=skr2903krr@gmail.com'+document.getElementById('canvas').value+'&body='+document.getElementById('canvas').value;
+              window.location.href = link;
+        },
+        print:function()
+        {
+          this.$.print.hidden=true;
+          this.$.text.hidden=true;
+          this.$.selectgradebox.hidden=true;
+          this.$.selectclass.hidden=true;
+            if (!window.print){
+            alert("You need NS4.x to use this print button!")
+            return
+            }
+            window.print();
+            this.$.print.hidden=false;
+            this.$.text.hidden=false;
+            this.$.selectgradebox.hidden=false;
+            this.$.selectclass.hidden=false;
+        },
+         autocompletearr:function(autocompletearr)
+    {
+      this.schoolname=sessionStorage.getItem("schoolname");
+        this.schooladdr=sessionStorage.getItem("schooladdr");
+         namearr=autocompletearr;
+    },
+    FnInputChanged:function(e){
+     if(e.keyCode==13|| e.keyCode==40)
+        this.querySelector('paper-listbox').focus();
+      var arr=[];
+      arr.push({"itemdes":"-----Select-----"});
+      this.querySelector('paper-listbox').style.visibility='visible';
+      if(e.keyCode==8){
+        this.itemflag="true";
+        this.itemval="";
+        //alert('yes');
+        var len=(this.value).length;
+        if(len<=1){
+          this.querySelector('paper-listbox').style.visibility='hidden';
+          this.itemArray="";
+          this.itemval="";
+        }
+        if(len>1){
+          this.querySelector('paper-listbox').style.visibility='visible';
+          var backsubval=(((this.value).substring(0,(len-1))).trim()).toUpperCase();
+          for(var i=0;i<namearr.length;i++)
+          {
+            var subval=((namearr[i].student_name).trim()).substring(0,backsubval.length);
+            if((subval).toUpperCase()==(backsubval).toUpperCase())
+            {
+              var obj={"itemdes":"","itemid":""};
+              obj.itemdes=namearr[i].student_name;
+              obj.itemid=namearr[i].student_id;
+              arr.push(obj);
+            }
+          }
+          this.itemArray=arr;
+        }
+      }
+      if(e.keyCode!=8&& e.keyCode!=16&& e.keyCode!=13 && e.keyCode!=38&&e.keyCode!=40&&e.keyCode!=37&&e.keyCode!=39){
+        if(this.itemflag=="true") {
+          this.itemval = (this.value).toUpperCase()+String.fromCharCode((e.keyCode)).toUpperCase();
+          this.itemflag="false";
+        }
+        else
+        this.itemval = this.value +String.fromCharCode((e.keyCode));
+        if(this.itemval.length>0)
+        {
+          for(var i=0;i<namearr.length;i++){
+            var subval=((namearr[i].student_name).trim()).substring(0,this.itemval.length);
+            if((subval).toUpperCase()==(this.itemval).toUpperCase()){
+              var obj={"itemdes":"","itemid":""};
+              obj.itemdes=namearr[i].student_name;
+              obj.itemid=namearr[i].student_id;
+              arr.push(obj);
+            }
+          }
+          if(arr.length>0)
+            this.itemArray=arr;
+          else {
+            var obj={"itemdes":"","itemid":""};
+              obj.itemdes=namearr[i].student_name;
+              obj.itemid=namearr[i].student_id;
+              arr.push(obj);
+            this.itemArray=arr;
+          }
+        }
+      }
+
+
+      this.studname="";
+        this.stnd="";
+        this.sec="";
+        this.mobno="";
+        this.blood="";
+        this.sid="";
+        this.parent="";
+        this.address1="";
+        this.address2="";
+        this.town="";
+        this.pin="";
+        this.pickup="";
+        this.drop="";
+        this.zone="";
+        this.pickuprout="";
+        this.droprout="";
+       },
+     FnItemSelected:function(e)
+   {  
+       this.querySelector('paper-listbox').style.visibility='hidden';
+    this.studid = e.target.selectedItem.textContent.trim();
+    this.itemArray=[];
+    document.querySelector('#fetchname').selected=-1;
+    this.studname=this.studid;
+    this.value=this.studid;
+    this.$.root.getpassdetail(this.studid);
+    this.$.root.getzonedetail(this.studid);
+    document.querySelector('#selectgradebox').checked=false;
+  },
+ /* passarrgetarr:function(arr){
+   this.passarr1=arr;
+    alert('1');
+  alert(JSON.stringify(this.passarr1));
+     },
+ */ changehandler:function(e)
+  {
+   //alert('hello');
+    if(e.target.checked==true){
+      this.$.selectclass.hidden=false;
+      this.$.text.hidden=true;
+      this.$.pass.hidden=true;
+      this.$.passtemp.hidden=false;
+    }
+    else
+    {
+     this.$.selectclass.hidden=true; 
+     this.$.text.hidden=false;
+     this.$.pass.hidden=false;
+      this.$.passtemp.hidden=true;
+    }
+  },
+  class:function(e){
+    this.passarr1="";
+    this.val=(e.target.selectedItem.textContent).trim();
+     for(var i=0;i<this.classarr.length;i++){
+            if(this.classarr[i].class==this.val)
+              this.seltripsz=this.classarr[i].tripidz;
+          } 
+        //  alert(this.val)
+          // document.querySelector('passtemplate-card').fnsetclear();
+    this.$.maps.getgradedata(this.seltripsz,this.val);
+  }
+
+    });
+  })();
+  </script>
+</dom-module>

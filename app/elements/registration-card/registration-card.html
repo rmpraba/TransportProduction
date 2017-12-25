@@ -1,0 +1,183 @@
+
+
+<link rel="import" href="..\..\bower_components/polymer/polymer.html">
+<link rel="import" href="../register-service/register-service.html">
+<link rel="import" href="../register-dob-card/register-dob-card.html">
+
+<dom-module id="registration-card">
+  <template>
+    <style>
+      :host {
+        display: block;
+      }
+      .card{
+        width: 60%;
+        margin-left: 27%;
+        @apply(--layout-vertical);
+      }
+      .div1{
+        @apply(--layout-horizontal);
+        margin-left: 14%;
+      }
+      paper-input{
+        width: 30%;
+        margin-left: 5%;
+      }
+      #pay,#btn{
+        margin-top: 5%;
+      }
+      #Cheque{ 
+        margin-left: 5%;
+      }
+      #btn{
+        margin-left: 23%;
+      }
+      registration-datepicker-card{
+        margin-left: 5%;
+      }
+      paper-item{
+        margin-left: 4%;
+      }
+      register-dob-card{
+        margin-left: 5%;
+        width: 30%;
+      }
+      paper-dropdown-menu{
+        margin-left: 5%;
+        width: 30%;
+        --paper-input-container-label: { color: red };
+      }
+      paper-item{
+        margin-top: -2%;
+      }
+      paper-button{
+        margin-left: 5%;
+      }
+      paper-input{
+        --paper-input-container-label: { color: red };
+      }
+     
+      .card
+      {
+        width:45%;
+        height:450px;
+        border: solid 1px #555; 
+        background-color: white; 
+       box-shadow: 0 0 3px 3px rgb(184, 209, 249); -moz-box-shadow: 0 0 3px 3px rgb(184, 209, 249); -webkit-box-shadow: 0 0 3px 3px gb(184, 209, 249); -o-box-shadow: 0 0 3px 3px rgb(184, 209, 249); 
+      }
+    
+    </style>
+    <div class="card">
+      <div class="div1">
+        <paper-input label="First Name" value="{{firstname}}" required></paper-input>
+        <paper-input label="Last Name" value="{{lastname}}" required></paper-input>
+      </div>
+      <div class="div1">
+      <register-dob-card></register-dob-card>
+        <!-- <paper-input label="Date Of Birth" value="{{dob}}"></paper-input> -->
+        <!-- <paper-input label="Class For Admission" value="{{classs}}"></paper-input> -->
+        <paper-dropdown-menu label="Class For Admission" on-iron-select="FnSelectclass" attr-for-selected="value">
+            <paper-listbox class="dropdown-content" id="grade">
+              <paper-item value="Nursery">Nursery</paper-item>
+              <paper-item value="Junior KG">Junior KG</paper-item>
+              <paper-item value="Senior KG">Senior KG</paper-item>
+              <paper-item value="Grade-1">Grade-1</paper-item>
+              <paper-item value="Grade-2">Grade-2</paper-item>
+              <paper-item value="Grade-3">Grade-3</paper-item>
+              <paper-item value="Grade-4">Grade-4</paper-item>
+              <paper-item value="Grade-5">Grade-5</paper-item>
+              <paper-item value="Grade-6">Grade-6</paper-item>
+              <paper-item value="Grade-7">Grade-7</paper-item>
+              <paper-item value="Grade-8">Grade-8</paper-item>
+              <paper-item value="Grade-9">Grade-9</paper-item>
+              <paper-item value="Grade-10">Grade-10</paper-item>
+            </paper-listbox>
+          </paper-dropdown-menu>
+      </div>
+      <div class="div1">
+        <paper-input label="Father Name" value="{{fathername}}" required></paper-input>
+        <paper-input label="Mother Name" value="{{mothername}}" required></paper-input>
+      </div>
+      <div class="div1">
+        <paper-input label="Mobile No" value="{{mobileno}}" required></paper-input>
+        <paper-input label="Email Id" value="{{email}}" required></paper-input>
+      </div>
+      <div class="div1">
+        <paper-input label="Location" value="{{location}}" required></paper-input>
+        <paper-input label="Amount" value="{{amount}}" required></paper-input>
+      </div>
+      <div class="div1" id="pay">
+        <paper-item>Mode of payment</paper-item>
+        <paper-checkbox id='Cash' on-change="FnChange">Cash</paper-checkbox>
+        <paper-checkbox id='Cheque' on-change="FnChange">Cheque</paper-checkbox>
+      </div>
+      <div class="div1" hidden$="{{hidecheque}}">
+        <paper-input label="Bank Name" value="{{bankname}}" required></paper-input>
+        <paper-input label="Cheque No" value="{{chequeno}}" required></paper-input>
+        <registration-datepicker-card></registration-datepicker-card>
+      </div>
+      <div class="div1" id="btn">
+        <paper-button on-click="submit">Submit</paper-button>
+        <paper-button on-click="cancel">Cancel</paper-button>
+      </div>
+    </div>
+    <register-service id="regservice"></register-service>
+  </template>
+  <script>
+  (function() {
+    'use strict';
+
+    Polymer({
+      is: 'registration-card',
+      ready:function(){
+        this.hidecheque=true;
+      },
+      FnSelectclass:function(e){
+        this.class=(e.target.selectedItem.textContent).trim();
+      },
+      FnClear:function(){
+        this.firstname="";
+        this.lastname="";
+        this.fathername="";
+        this.mothername="";
+        this.mobileno="";
+        this.email="";
+        this.amount="";
+        this.location="";
+        this.mode="";
+        this.bankname="";
+        this.chequeno="";
+        document.querySelector('#Cash').checked=false;
+        document.querySelector('#Cheque').checked=false;
+        document.querySelector('#grade').selected=-1;
+        localStorage.setItem("localsess_regdob_date","");
+        localStorage.setItem("localsess_regcheque_date","");
+      },
+      submit:function(){
+        // alert(this.$.regservice);
+        if(this.firstname==""||this.firstname==null||this.lastname==""||this.lastname==null||this.fathername==""||this.fathername==null||this.mobileno==""||this.mobileno==null||this.email==""||this.email==null){
+          alert("Please enter all the fields!!");
+        }
+        else{
+        document.querySelector('registration-receipt-card').setValue(this.firstname,this.lastname,this.class,this.fathername,this.mothername,this.mobileno,this.email,this.amount,this.location,this.mode,this.bankname,this.chequeno);  
+        this.$.regservice.registerService(this.firstname,this.lastname,this.class,this.fathername,this.mothername,this.mobileno,this.email,this.amount,this.location,this.mode,this.bankname,this.chequeno);
+
+        }
+        // this.$.regservice.registerService(this.firstname,this.lastname,this.dob,this.class,this.fathername,this.mothername,this.mobileno,this.email,this.amount,this.location,this.mode,this.bankname,this.chequeno);
+      },
+      cancel:function(){
+        this.FnClear();
+      },
+      FnChange:function(){
+        if(document.querySelector('#Cash').checked==true)
+        this.mode="Cash";
+        if(document.querySelector('#Cheque').checked==true){
+        this.hidecheque=false;
+        this.mode="Cheque";
+        }
+      }
+
+    });
+  })();
+  </script>
+</dom-module>

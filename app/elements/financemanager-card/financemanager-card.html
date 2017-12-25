@@ -1,0 +1,287 @@
+<link rel="import" href="../../bower_components/paper-icon-button/paper-icon-button.html">
+<script src="../../bower_components/webcomponentsjs/webcomponents-lite.js"></script>
+<link rel="import" href="../transport-service/transport-service.html">
+<link rel="import" href="../transportfee-service/transportfee-service.html">
+<link rel="import" href="../refund-service/refund-service.html">
+
+ <link rel="stylesheet" type="text/css" href="../../styles/styles.css">
+ <dom-module id="financemanager-card">
+ <template> 
+ <style>
+ .frontpage
+ {
+  margin:0 auto;
+    text-align: center;
+    width: 100%;
+ }
+.iconbutton
+ {
+
+    top:35%;
+  width: 13%;
+  height: 33%;
+ }
+ </style>
+  <body style="height: auto;">
+  
+
+    <div class="frontpage">
+    
+      <paper-icon-button class="iconbutton" src="../../images/register.jpg" on-click="register"></paper-icon-button>
+       <paper-icon-button class="iconbutton" src="../../images/cheque.png" on-click="chequedetails"></paper-icon-button>
+        <paper-icon-button class="iconbutton" src="../../images/bouncecheque.png" on-click="bouncecheque"></paper-icon-button>
+         <paper-icon-button class="iconbutton" src="../../images/excel-report.png" on-click="excelreport"></paper-icon-button>
+       <paper-icon-button class="iconbutton" src="../../images/transport-cancel.png" on-click="transportcancelreport"></paper-icon-button>
+      <div class="frontpage">
+     
+      <paper-icon-button class="iconbutton" src="../../images/verify.jpg" on-click="discountverify"></paper-icon-button>
+       <paper-icon-button class="iconbutton" src="../../images/deductions.png" on-click="refundverify"></paper-icon-button>
+       <paper-icon-button class="iconbutton" src="../../images/fee_reports.png" on-click="feereports"></paper-icon-button>
+       <paper-icon-button class="iconbutton" src="../../images/pendingreport.jpg" on-click="pend"></paper-icon-button>
+       
+       <paper-icon-button class="iconbutton" src="../../images/edit-cheque.png" on-click="editcheque"></paper-icon-button>
+    </div>
+     <div class="frontpage">
+          <paper-icon-button class="iconbutton" src="../../images/reports.png" on-click="report"></paper-icon-button>
+      
+       <paper-icon-button class="iconbutton" src="../../images/discount.png" on-click="discount"></paper-icon-button>
+        <paper-icon-button class="iconbutton" src="../../images/route_reports.png" on-click="routereport"></paper-icon-button>
+        <paper-icon-button class="iconbutton" src="../../images/summary_icon.png" on-click="summary"></paper-icon-button>
+         <paper-icon-button class="iconbutton" src="../../images/attendance.png" on-click="attendancereport"></paper-icon-button>
+
+     </div>
+      </div>
+      <div class="financecdialog">      
+      <paper-dialog id="financecdialog" entry-animation="scale-up-animation" exit-animation="fade-out-animation" modal>
+         <paper-dropdown-menu id="financeacademicyr" label="Select Academic Year" disabled="{{read}}" required>
+            <paper-menu id="financeacademic" class="dropdown-content"  on-iron-select="FnSelectacademicyear"  attr-for-selected="value" required>  
+              <template is="dom-repeat" items="{{academicarr}}">
+                <paper-item value="{{item.year}}">{{item.year}}</paper-item>
+                </template>
+            </paper-menu>
+          </paper-dropdown-menu>
+      </paper-dialog>
+    </div>  
+  </body>
+    <transport-service id="transportservice"></transport-service>
+     <transportfee-service id="trservice"></transportfee-service>
+     <refund-service id="rservice"></refund-service>
+</template>
+<script>
+(function() {
+    'use strict';
+    var finacademicyr;   
+  Polymer({
+ 
+    is: "financemanager-card",
+    
+       FnSelectacademicyear:function(e)
+    { 
+ 
+        finacademicyr=e.target.selectedItem.value.trim();
+           localStorage.setItem("curr_sess_academicyear",finacademicyr);
+            if(localStorage.getItem('curr_sess_acadmic')=="register")
+            {
+                 document.querySelector('transport-app').setPage("registration","Registration Page");
+     
+            }
+          else if(localStorage.getItem('curr_sess_acadmic')=="report")
+            {
+
+        document.querySelector('transport-app').setPage("generatereport","Generate Report");
+         this.$.transportservice.generatereportbyname();
+  
+            }
+            else if(localStorage.getItem('curr_sess_acadmic')=="discount")
+            {
+          this.$.trservice.discountbyname();
+         document.querySelector('transport-app').setPage("discount","Fee Discount");
+        }
+     else if(localStorage.getItem('curr_sess_acadmic')=="discountverify")
+            {
+          this.$.transportservice.getapprovalverify();
+            document.querySelector('transport-app').setPage("discountverify","Discount Verification");
+  
+            }
+     else if(localStorage.getItem('curr_sess_acadmic')=="refundverify")
+            {
+
+         this.$.rservice.getverify();
+         document.querySelector('transport-app').setPage("refundverify","Refund Verification");
+
+            }
+     else if(localStorage.getItem('curr_sess_acadmic')=="chequedetails")
+            {
+         this.$.transportservice.generatenameforcheque();
+         document.querySelector('transport-app').setPage("chequedetail","Cheque Detail");
+         document.querySelector('chequedetail-card').refreshchequedetail();
+
+            }
+     else if(localStorage.getItem('curr_sess_acadmic')=="bouncecheque")
+            {
+                 this.$.trservice.bouncechequedetails();
+         document.querySelector('transport-app').setPage("bouncechequedetail","Bounce Cheque Detail");
+
+            }
+     else if(localStorage.getItem('curr_sess_acadmic')=="transportcancelreport")
+            {
+                this.$.trservice.transportcanceldetail();
+         document.querySelector('transport-app').setPage("tansportcanceldetail","Transport Cancel Detail");
+
+            }
+     else if(localStorage.getItem('curr_sess_acadmic')=="feereports1")
+            {
+
+        document.querySelector('transport-app').setPage("feereports","Fee Reports");
+     
+            }
+     else if(localStorage.getItem('curr_sess_acadmic')=="pend")
+            {
+                    this.$.trservice.pending();
+          document.querySelector('transport-app').setPage("pending","Pending Fee Reports");
+  
+            }
+     else if(localStorage.getItem('curr_sess_acadmic')=="routereport1")
+            {
+                this.$.transportservice.generateroutereport();
+      document.querySelector('transport-app').setPage("generateroutereport","Route Report");
+    
+            }
+     else if(localStorage.getItem('curr_sess_acadmic')=="editcheque")
+            {
+            this.$.transportservice.getchequedetailsbyname();
+          document.querySelector('transport-app').setPage("editcheque","Edit Cheque Details");
+           }
+     else if(localStorage.getItem('curr_sess_acadmic')=="excelreport")
+            {
+          document.querySelector('transport-app').setPage("excelreport","Excel Report");
+           }
+     else if(localStorage.getItem('curr_sess_acadmic')=="summary")
+            {
+              this.$.transportservice.summary();
+        this.$.transportservice.summarydrop();
+        document.querySelector('transport-app').setPage("summary","Summary Route Report");
+     
+            }
+     else if(localStorage.getItem('curr_sess_acadmic')=="attendancereport")
+            {
+                 document.querySelector('transport-app').setPage("attendance","Attendance Report");
+
+            }
+     
+          this.$.financecdialog.close();
+   
+      },
+      Fnrefresh:function()
+      {
+        document.querySelector('#financeacademic').selected=-1;
+      },
+      register:function()
+      {
+        localStorage.setItem('curr_sess_acadmic','register');
+              this.$.transportservice.callAcademicService();
+              this.$.financecdialog.toggle();
+        
+      },
+      report:function()
+      {
+          localStorage.setItem('curr_sess_acadmic','report');
+              this.$.transportservice.callAcademicService();
+              this.$.financecdialog.toggle();
+      },
+      discount:function()
+      {
+           localStorage.setItem('curr_sess_acadmic','discount');
+              this.$.transportservice.callAcademicService();
+              this.$.financecdialog.toggle();
+      },
+      discountverify:function()
+      {
+           localStorage.setItem('curr_sess_acadmic','discountverify');
+              this.$.transportservice.callAcademicService();
+              this.$.financecdialog.toggle();
+      },
+      refundverify:function()
+      {
+           localStorage.setItem('curr_sess_acadmic','refundverify');
+              this.$.transportservice.callAcademicService();
+              this.$.financecdialog.toggle();
+ 
+      },  
+
+        chequedetails:function()
+      {
+           localStorage.setItem('curr_sess_acadmic','chequedetails');
+              this.$.transportservice.callAcademicService();
+              this.$.financecdialog.toggle();
+  
+  
+      },
+       bouncecheque:function()
+      {
+            localStorage.setItem('curr_sess_acadmic','bouncecheque');
+              this.$.transportservice.callAcademicService();
+              this.$.financecdialog.toggle();
+    
+      },
+        transportcancelreport:function()
+      {
+          localStorage.setItem('curr_sess_acadmic','transportcancelreport');
+              this.$.transportservice.callAcademicService();
+              this.$.financecdialog.toggle();
+  
+      
+      },
+      feereports:function()
+      {
+             localStorage.setItem('curr_sess_acadmic','feereports1');
+              this.$.transportservice.callAcademicService();
+              this.$.financecdialog.toggle();
+   },
+      pend:function()
+      {
+             localStorage.setItem('curr_sess_acadmic','pend');
+              this.$.transportservice.callAcademicService();
+              this.$.financecdialog.toggle();
+  
+      },
+
+      routereport:function(){
+                 localStorage.setItem('curr_sess_acadmic','routereport1');
+              this.$.transportservice.callAcademicService();
+              this.$.financecdialog.toggle();
+  
+      },
+      editcheque:function(){
+            localStorage.setItem('curr_sess_acadmic','editcheque');
+              this.$.transportservice.callAcademicService();
+              this.$.financecdialog.toggle();
+  
+      },
+      excelreport:function(){
+            localStorage.setItem('curr_sess_acadmic','excelreport');
+              this.$.transportservice.callAcademicService();
+              this.$.financecdialog.toggle();
+      },
+      summary:function(){ 
+             localStorage.setItem('curr_sess_acadmic','summary');
+              this.$.transportservice.callAcademicService();
+              this.$.financecdialog.toggle();
+      
+
+       },
+      attendancereport:function()
+      {   
+             localStorage.setItem('curr_sess_acadmic','attendancereport');
+              this.$.transportservice.callAcademicService();
+              this.$.financecdialog.toggle();
+      
+      }
+     
+     
+      
+
+  });
+  })();
+</script>
+</dom-module>

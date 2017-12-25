@@ -1,0 +1,255 @@
+<!--
+@license
+Copyright (c) 2015 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<link rel="import" href="..\..\bower_components/polymer/polymer.html">
+
+<dom-module id="trip-to-grade-card">
+  <template>
+    <style>
+      :host {
+        display: block;
+      }
+      .tb1{
+        display: flex;
+         border-collapse: collapse;
+         border: 1px solid #6699ff;
+          padding: 5px;
+         width: 35%;
+         margin-left: 31%;
+         margin-top: 1% !important;
+          }
+    </style>
+    <div>
+    <div class="tb1">
+       <div style="margin-top: 1%">
+          <label><b>SELECT THE TRIP</b></label></br>
+          <paper-checkbox  value="{{trip1}}" id="tripidz" on-change="fnsetvalue">TRIP1</paper-checkbox>
+         <paper-checkbox  value="{{trip2}}" id="tripidz1"  on-change="fnsetvalue1" id="tripidz2">TRIP2</paper-checkbox>
+         </div> 
+      <div id="set1">
+          <div style="margin-left:-41%;margin-top:28%">
+          <label><b>SELECT THE GRADE</b></label>
+       <table>
+        <template is="dom-repeat" items="{{finaltrip}}" as="view">
+        <tr>
+        <template is="dom-repeat" items="{{view}}" as="v">
+               
+               <td >
+              <trip-to-grade-item-card idd="ENRtripzz{{v.classid}}" id="ENRtripz{{v.class}}" gradename="{{v.class}}"  tripid="{{v.tripid}}" check="{{v.check}}" ></trip-to-grade-item-card></td>
+                
+        </template>
+        </tr>
+       </template>
+       </table>
+          
+    <!--    <template is="dom-repeat" items="{{finaltrip}}" as="view">
+        <trip-to-grade-item-card id="ENRtripz{{view.class}}" gradename="{{view.class}}"  tripid="{{view.tripid}}" check="{{view.check}}" ></trip-to-grade-item-card></br>
+        </template -->
+        
+           <paper-button style="height:33px !important;" on-click="submit">submit</paper-button>
+       </div>
+     
+      </div>
+      </div>
+     
+ <iron-ajax
+      method="post"
+      id="rtip1ajax"
+      url="{{rtip1url}}"
+      params="{{rtip1param}}"
+      handle-as="json"
+      content-type="application/json"
+      on-response="rtip1Response"
+      debounce-duration="300"
+      >
+      <iron-ajax
+      method="post"
+      id="rtip2ajax"
+      url="{{rtip2url}}"
+      params="{{rtip2param}}"
+      handle-as="json"
+      content-type="application/json"
+      on-response="rtip2Response"
+      debounce-duration="300"
+      >
+       <iron-ajax
+      method="post"
+      id="finalrtipajax"
+      url="{{finalrtipurl}}"
+      params="{{finalrtipparam}}"
+      handle-as="json"
+      content-type="application/json"
+      on-response="finalrtipResponse"
+      debounce-duration="300"
+      >
+ </iron-ajax>  
+    </div>
+<transport-service id="trans"></transport-service>
+  </template>
+  <script>
+  (function() {
+    'use strict';
+var triparrz=[];
+    Polymer({
+      is: 'trip-to-grade-card',
+   fnref:function(e){
+    this.$.set1.hidden=true;
+
+   },
+    
+      fnsetvalue:function(e){
+     this.$.set1.hidden=false;
+    
+    if(tripidz.checked==true){
+        tripidz1.checked=false;
+       this.rtip1url=sessionStorage.getItem("addrinfo")+"/rtipz-service";
+        var obj={"schoolid":"","academic_year":""}
+         obj.academic_year=localStorage.getItem("curr_sess_academicyear");
+         obj.schoolid=sessionStorage.getItem("sch");
+         obj.trip='1';
+        this.rtip1param=obj;
+       // alert(JSON.stringify(obj));
+        this.$.rtip1ajax.generateRequest();
+            
+       }
+      },
+      triptograde:function(arr){
+          triparrz=arr;
+      },
+      fnsetvalue1:function(e){
+          this.$.set1.hidden=false;
+   
+           if(tripidz1.checked==true){
+               tripidz.checked=false;
+        this.rtip2url=sessionStorage.getItem("addrinfo")+"/rtipz-service";
+         var obj={"schoolid":"","academic_year":""}
+         obj.academic_year=localStorage.getItem("curr_sess_academicyear");
+         obj.schoolid=sessionStorage.getItem("sch");
+         obj.trip='2';
+        this.rtip2param=obj;
+    //   alert(JSON.stringify(obj));
+       this.$.rtip2ajax.generateRequest();
+     }
+      },
+       submit:function(e){
+          for(var i=0;i<triparrz.length;i++){
+          this.finalrtipurl=sessionStorage.getItem("addrinfo")+"/finalrtip-service";
+         var obj={"schoolid":"","academic_year":"","gradename":"","tripid":""}
+         obj.academic_year=localStorage.getItem("curr_sess_academicyear");
+         obj.schoolid=sessionStorage.getItem("sch");
+         obj.gradename=triparrz[i].gradename;
+         obj.tripid=triparrz[i].tripid;
+         this.finalrtipparam=obj;
+        // alert(JSON.stringify(obj));
+         this.$.finalrtipajax.generateRequest();
+      }
+              document.querySelector('trip-to-grade-item-card').triptograde1();
+ 
+    triparrz=[];  
+     },
+   finalrtipResponse:function(e){
+var res=e.detail.response.returnval;
+   alert(JSON.stringify(res));
+   },
+      rtip2Response:function(e){
+     var res=e.detail.response.triparr;
+     var res1=e.detail.response.gradearr;
+        for(var j=0;j<res1.length;j++){
+             var flag=0;
+                    res1[j].tripid='2';
+        
+          for(var i=0;i<res.length;i++){
+                       if(res[i].grade_name==res1[j].class){
+                              flag=1;
+                   
+                       res1[j].check=true;
+                }}
+                 if(flag==0){
+                  res1[j].check=false;
+                 } 
+    
+         }
+
+        // alert(JSON.stringify(overall));
+        for(var i=0;i<res1.length;i++){
+          // alert(res1[i].class);
+          res1[i].classid=(res1[i].class).replace(' ','');
+        }
+       var overall=[];
+        var temp=[];
+        for(var i=0;i<res1.length;i++){
+        // alert(res[i].id);
+        temp.push(res1[i]);
+        
+         if(i!=0&&i%3==0){
+            // alert(i); 
+            overall.push(temp);           
+            temp=[];
+         }
+         if(i==(res1.length)-1)
+           {
+             // temp.push(res[i]);
+             overall.push(temp); 
+           } 
+        }
+
+
+        
+this.finaltrip=overall;
+//alert(JSON.stringify(this.finaltrip));
+      },
+      rtip1Response:function(e){
+      var res=e.detail.response.triparr;
+      var res1=e.detail.response.gradearr;
+     //  alert(JSON.stringify(res));
+     //  alert(JSON.stringify(res1));
+        for(var j=0;j<res1.length;j++){
+             var flag=0;
+               res1[j].tripid='1';
+            for(var i=0;i<res.length;i++){
+                  if(res[i].grade_name==res1[j].class){
+                                   flag=1;
+             res1[j].check=true;
+
+                }}
+                 if(flag==0){
+                  res1[j].check=false;
+                 } 
+    
+      }
+      for(var i=0;i<res1.length;i++){
+          // alert(res1[i].class);
+          res1[i].classid=(res1[i].class).replace(' ','');
+        }
+         var overall=[];
+        var temp=[];
+        for(var i=0;i<res1.length;i++){
+        // alert(res[i].id);
+        temp.push(res1[i]);
+        
+         if(i!=0&&i%3==0){
+            // alert(i); 
+            overall.push(temp);           
+            temp=[];
+         }
+         if(i==(res1.length)-1)
+           {
+             // temp.push(res[i]);
+             overall.push(temp); 
+           } 
+        }
+      this.finaltrip=overall;
+      //alert(JSON.stringify(this.finaltrip));
+
+          }
+    });
+  })();
+  </script>
+</dom-module>

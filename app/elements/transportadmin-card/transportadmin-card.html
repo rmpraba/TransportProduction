@@ -1,0 +1,397 @@
+
+ <link rel="import" href="../../bower_components/paper-icon-button/paper-icon-button.html">
+ <script src="../../bower_components/webcomponentsjs/webcomponents-lite.js"></script>
+ <link rel="stylesheet" type="text/css" href="../../styles/styles.css">
+ <link rel="import" href="../refund-service/refund-service.html">
+ <link rel="import" href="../transport-service/transport-service.html">
+ <link rel="import" href="../mapstudenttopoint-service/mapstudenttopoint-service.html">
+  <link rel="import" href="../changepoint-service/changepoint-service.html">
+ <dom-module id="transportadmin-card">
+ <template>
+ <style >
+
+ .frontpage
+ {
+    margin:0 auto;
+    text-align: center;
+    width: 100%;
+ }
+ .iconbutton  
+ {
+  top:35%;
+  width: 13%;
+  height: 33%;
+ }
+ </style>
+  <body style="height:auto;">
+    <div class="frontpage">
+
+         <paper-icon-button hidden class="iconbutton" src="../../images/zone.png" on-click="zone"></paper-icon-button>
+        <paper-icon-button class="iconbutton" src="../../images/addroute.png" on-click="addroute"></paper-icon-button>
+
+          <paper-icon-button class="iconbutton" src="../../images/allocation.png" on-click="routeallocation"></paper-icon-button>
+
+           <paper-icon-button class="iconbutton" src="../../images/points.png" on-click="pointallocation"></paper-icon-button>
+           
+            <paper-icon-button class="iconbutton"  src="../../images/changepoints.png" on-click="changepointallocation"></paper-icon-button>
+
+            <paper-icon-button class="iconbutton"  src="../../images/pass.png" on-click="stpass"></paper-icon-button> 
+     
+            <paper-icon-button class="iconbutton"  src="../../images/bus_report.png" on-click="busreport"></paper-icon-button>
+     
+            <paper-icon-button class="iconbutton"  src="../../images/route_reports.png" on-click="routereport"></paper-icon-button>
+  
+            <paper-icon-button class="iconbutton" src="../../images/gradewise-route-report.png" on-click="gradewisereport"></paper-icon-button>
+            
+            <div class="staff1" hidden$="{{staffroutereport}}">
+              <paper-icon-button class="iconbutton" src="../../images/staffreport.png" on-click="stfreport"></paper-icon-button>
+            </div>
+            
+
+            <paper-icon-button class="iconbutton" src="../../images/distancezone.jpg" on-click="distancetozone"></paper-icon-button>
+
+            <paper-icon-button class="iconbutton" src="../../images/triptograde.jpg" on-click="triptograde"></paper-icon-button>
+
+            <!-- <div class="driver1">  -->  
+              <paper-icon-button class="iconbutton" src="../../images/driver.png" on-click="driver"></paper-icon-button>
+            <!-- </div> -->
+
+            <!-- <div class="bus1"> -->
+              <paper-icon-button class="iconbutton"  src="../../images/bus.png"  on-click="bus"></paper-icon-button>
+            <!-- </div> -->
+
+            <!-- <div class="busroutemap"> -->
+              <paper-icon-button class="iconbutton" src="../../images/busroute.png" on-click="busroute"></paper-icon-button>
+            <!-- </div> -->
+
+            <!-- <div class="attender1" hidden$="{{attender1}}"> -->
+              <paper-icon-button class="iconbutton"  src="../../images/attender.png" on-click="attender"></paper-icon-button>
+            <!-- </div> -->
+
+
+            <div class="attend1" hidden$="{{Attendence}}">
+              <paper-icon-button class="iconbutton" src="../../images/add_attendance.png" on-click="addattendence"></paper-icon-button>
+            </div>
+
+            
+
+            <div class="staffpoint" hidden$="{{staffpoint}}">
+              <paper-icon-button class="iconbutton" src="../../images/staff_route.png" on-click="staffroute"></paper-icon-button>
+            </div>
+
+             
+
+            
+      
+
+    </div>
+     <div class="transcdialog">      
+      <paper-dialog id="transcdialog" entry-animation="scale-up-animation" exit-animation="fade-out-animation" modal>
+         <paper-dropdown-menu id="transacademicyr" label="Select Academic Year" disabled="{{read}}" required>
+            <paper-menu id="transacademicyrwww" class="dropdown-content"  on-iron-select="FnSelectacademicyear"  attr-for-selected="value" required>  
+              <template is="dom-repeat" items="{{academicarr}}">
+                <paper-item value="{{item.year}}">{{item.year}}</paper-item>
+                </template>
+            </paper-menu>
+          </paper-dropdown-menu>
+      </paper-dialog>  
+    </div>  
+  </body>  
+  <mapstudenttopoint-service id="maps"></mapstudenttopoint-service>
+   <refund-service id="service"></refund-service>
+   <transport-service id="transportservice"></transport-service>
+   <changepoint-service id="chpoint"></changepoint-service>
+</template>
+<script>      
+ var transacademicyr;
+  Polymer({
+
+    is: "transportadmin-card",
+
+    
+    ready:function()
+    {
+      this.staffroutereport=true;
+      this.staffpoint=true;
+      //this.attender1=true;
+      this.Attendence=true;
+    },
+    FnSelectacademicyear:function(e)
+    { 
+   
+        transacademicyr=e.target.selectedItem.value.trim();
+        localStorage.setItem("curr_sess_academicyear",transacademicyr);
+
+      if(localStorage.getItem('curr_sess_acadmic')=="zone")
+
+        {
+        document.querySelector('transport-app').setPage("zonetostudent","Zone to Student");
+        document.querySelector('zonetostudent-card').hidetransport=true;
+        document.querySelector('zonetostudent-card').hidetransport1=true;
+        document.querySelector('zonetostudent-card').changeoption();
+           this.$.transportservice.getname();
+           this.$.transportservice.getzone();
+           this.$.transportservice.gettermdate();
+       }  
+   
+       if(localStorage.getItem('curr_sess_acadmic')=="pointallocation")
+        { 
+          document.querySelector('transport-app').setPage("mapstudenttopoint","Map Student to point");
+        this.$.maps.selectclass();
+
+       }
+         else if(localStorage.getItem('curr_sess_acadmic')=="changepointallocation") 
+         {
+         document.querySelector('transport-app').setPage("changepoint","Change Student Point");
+            this.$.chpoint.selectname1();
+            this.$.chpoint.selectclass();
+
+         }
+        else if(localStorage.getItem('curr_sess_acadmic')=="routeallocation") 
+         {
+
+        document.querySelector('transport-app').setPage("mappointtoroute","Map Point to Route");
+        this.$.transportservice.getroute();
+       }
+      else if(localStorage.getItem('curr_sess_acadmic')=="stpass") 
+         {
+        document.querySelector('transport-app').setPage("pass","Student Bus Pass");
+         this.$.maps.selectclass();
+         this.$.transportservice.stupassgetname();
+           }
+            else if(localStorage.getItem('curr_sess_acadmic')=="addroute") 
+            {
+              document.querySelector('transport-app').setPage("addroute","Add Route");
+             this.$.maps.FetchRoute();
+         }
+         else if(localStorage.getItem('curr_sess_acadmic')=="bus") 
+         {
+           document.querySelector('transport-app').setPage("bus","Add Bus Details");
+           this.$.transportservice.bus_count();
+         }
+       else if(localStorage.getItem('curr_sess_acadmic')=="driver") 
+         {
+         document.querySelector('transport-app').setPage("driver","Add Driver Details");
+          this.$.transportservice.driver_count();
+        }
+       else if(localStorage.getItem('curr_sess_acadmic')=="attender") 
+         {
+          document.querySelector('transport-app').setPage("attender","Add Attender Details");
+        this.$.transportservice.attender_count();
+       }
+      else if(localStorage.getItem('curr_sess_acadmic')=="bustoroute") 
+         {
+          document.querySelector('transport-app').setPage("bustoroute","Bus to Route");
+        }
+      else if(localStorage.getItem('curr_sess_acadmic')=="busreport") 
+         {
+           document.querySelector('transport-app').setPage("busreport","Bus Report");
+         this.$.transportservice.busreport();
+      }
+         else if(localStorage.getItem('curr_sess_acadmic')=="passtemp") 
+         {
+         
+        document.querySelector('transport-app').setPage("passtemp","STudent PAss");
+       }
+        else if(localStorage.getItem('curr_sess_acadmic')=="busroute") 
+        {
+    document.querySelector('transport-app').setPage("vehicleroute","Map Bus to Route");
+         this.$.transportservice.getroute();
+      }  
+            else if(localStorage.getItem('curr_sess_acadmic')=="routereport") 
+         {  
+      this.$.transportservice.generateroutereport();
+      this.$.transportservice.getgrade();
+      document.querySelector('transport-app').setPage("generateroutereport","Route Report");
+      }
+         else if(localStorage.getItem('curr_sess_acadmic')=="gradewisereport") 
+         {
+
+           this.$.transportservice.generateroutereport();
+           document.querySelector('transport-app').setPage("gradewiseroute","Grade Wise Route Report");
+       }
+     else if(localStorage.getItem('curr_sess_acadmic')=="addattendence"){
+          this.$.transportservice.getroute();
+         document.querySelector('transport-app').setPage("addattendence","Attendance");
+       }
+         else if(localStorage.getItem('curr_sess_acadmic')=="staffroute"){
+           this.$.transportservice.getroute();
+           this.$.transportservice.staffgetname();
+      document.querySelector('transport-app').setPage("staffalloc","Staff Route Allocation");
+         }
+         else if(localStorage.getItem('curr_sess_acadmic')=="stfreport"){
+         this.$.transportservice.getroute();
+       document.querySelector('transport-app').setPage("staffroute","Staff Route Report");
+    
+         }
+         else if(localStorage.getItem('curr_sess_acadmic')=="distancetozone")
+         {
+          document.querySelector('transport-app').setPage("distancezone","Distance to Zone");
+          this.$.transportservice.fetchdistanceseq();
+          this.$.transportservice.fetchzoneseq();
+          this.$.transportservice.zonesercdzsd();
+          this.$.transportservice.zoneminmax();
+         }
+          else if(localStorage.getItem('curr_sess_acadmic')=="triptograde")
+         {
+          document.querySelector('transport-app').setPage("triptograde","Trip to Grade Mapping");
+              document.querySelector('trip-to-grade-card').fnref();
+     
+         }
+       this.$.transcdialog.close();
+    },
+     zone:function()   
+      {
+
+        localStorage.setItem('curr_sess_acadmic','zone'); 
+        this.$.transportservice.callAcademicService(); 
+        this.$.transcdialog.toggle();
+ 
+      }, 
+     FnRefresh:function()
+      {
+         document.querySelector('#transacademicyrwww').selected=-1;
+      },
+ 
+      pointallocation:function()
+      {
+    
+           localStorage.setItem('curr_sess_acadmic','pointallocation');
+               this.$.transportservice.callAcademicService();
+               this.$.transcdialog.toggle();
+          },
+       changepointallocation:function()
+      {
+        localStorage.setItem('curr_sess_acadmic','changepointallocation');
+              this.$.transportservice.callAcademicService();
+              this.$.transcdialog.toggle();
+        },
+      routeallocation:function()
+      {
+        localStorage.setItem('curr_sess_acadmic','routeallocation');
+              this.$.transportservice.callAcademicService();
+              this.$.transcdialog.toggle();
+         },
+       zone:function()   
+      {
+
+        localStorage.setItem('curr_sess_acadmic','zone'); 
+        this.$.transportservice.callAcademicService(); 
+        this.$.transcdialog.toggle();
+ 
+      },   
+     
+      routereport:function(){
+        localStorage.setItem('curr_sess_acadmic','routereport');
+              this.$.transportservice.callAcademicService();
+              this.$.transcdialog.toggle();
+         },
+       stpass:function()
+      {
+        localStorage.setItem('curr_sess_acadmic','stpass');
+              this.$.transportservice.callAcademicService();
+              this.$.transcdialog.toggle();
+         },
+      addroute:function()
+      {      
+        localStorage.setItem('curr_sess_acadmic','addroute');
+              //this.$.maps.FetchRoute();
+              this.$.transportservice.callAcademicService();
+              this.$.transcdialog.toggle();
+              
+         },
+      bus:function()
+      {
+        localStorage.setItem('curr_sess_acadmic','bus');
+              this.$.transportservice.callAcademicService();
+              this.$.transcdialog.toggle();
+      },
+      driver:function()
+      {
+         localStorage.setItem('curr_sess_acadmic','driver');
+         this.$.transportservice.callAcademicService();
+          this.$.transcdialog.toggle();
+         },
+      attender:function()
+      {
+        localStorage.setItem('curr_sess_acadmic','attender');
+                      this.$.transportservice.callAcademicService();
+              this.$.transcdialog.toggle();
+
+         },
+    bustoroute:function()
+    {
+      localStorage.setItem('curr_sess_acadmic','bustoroute');
+                    this.$.transportservice.callAcademicService();
+              this.$.transcdialog.toggle();
+
+         
+    },
+    busreport:function()
+    {
+      localStorage.setItem('curr_sess_acadmic','busreport');
+      this.$.transportservice.callAcademicService();
+       this.$.transcdialog.toggle();
+
+    },
+      passtemp:function(){
+        localStorage.setItem('curr_sess_acadmic','passtemp');
+                      this.$.transportservice.callAcademicService();
+              this.$.transcdialog.toggle();
+
+      },
+      busroute:function()
+      {
+        localStorage.setItem('curr_sess_acadmic','busroute');
+      this.$.transportservice.callAcademicService();
+      this.$.transcdialog.toggle();
+
+      },
+      routereport:function()
+      {
+        localStorage.setItem('curr_sess_acadmic','routereport');
+         this.$.transportservice.callAcademicService();
+         this.$.transcdialog.toggle();
+
+              },
+      gradewisereport:function()
+      {
+        localStorage.setItem('curr_sess_acadmic','gradewisereport');
+         this.$.transportservice.callAcademicService();
+       this.$.transcdialog.toggle();
+
+      },
+      addattendence:function()
+      {
+        localStorage.setItem('curr_sess_acadmic','addattendence');
+              this.$.transportservice.callAcademicService();
+                this.$.transcdialog.toggle();
+
+       },
+      staffroute:function(){
+        localStorage.setItem('curr_sess_acadmic','staffroute');
+                      this.$.transportservice.callAcademicService();
+                                    this.$.transcdialog.toggle();
+
+      },
+      stfreport:function(){
+        localStorage.setItem('curr_sess_acadmic','stfreport');
+               this.$.transportservice.callAcademicService();
+                 this.$.transcdialog.toggle();
+     },
+     distancetozone:function()
+     {
+       localStorage.setItem('curr_sess_acadmic','distancetozone');
+               this.$.transportservice.callAcademicService();
+                 this.$.transcdialog.toggle();
+
+     },
+     triptograde:function()
+     {
+       localStorage.setItem('curr_sess_acadmic','triptograde');
+               this.$.transportservice.callAcademicService();
+                 this.$.transcdialog.toggle();
+     }
+  });
+</script>
+</dom-module>

@@ -1,0 +1,183 @@
+<link rel="import" href="..\..\bower_components/polymer/polymer.html">
+<link rel="import" href="..\..\bower_components/paper-item/paper-item.html">
+<link rel="import" href="..\..\bower_components/paper-input/paper-input.html">
+<link rel="import" href="..\..\bower_components/paper-button/paper-button.html">
+<link rel="import" href="..\..\bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="../transport-service/transport-service.html">
+<link rel="import" href="../mapstudenttopoint-service/mapstudenttopoint-service.html">
+<link rel="stylesheet" type="text/css" href="../../styles/styles.css">
+
+<script type="text/javascript" src="http://code.jquery.com/jquery-1.6.2.js"></script>
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.14/jquery-ui.js"></script>
+<script type="text/javascript" src="http://mrrio.github.io/jsPDF/dist/jspdf.debug.js"></script>
+<script type="text/javascript" src="http://html2canvas.hertzen.com/build/html2canvas.js"></script>
+<dom-module id="passtemplate-get-item-card">
+  <template>
+    <style type="text/css">
+  .passtemp{
+
+    @apply(--layout-horizontal);
+    margin-left: 20%;
+    margin-top: 1%;
+}
+.passtemp .front{
+   width: 5.5cm;
+  height: 8.4cm;
+  background: linear-gradient(#408CD9,#5398DD,#66A3E1,#79AEE4,#8CBAE8,#A0C6EC,#B3D1F0,#CFE2F6,#ECF4FB,#FFFFFF);
+  border-radius: 15px;
+   border-color: #888888;
+   border-style: dotted;
+   border-width: 2px;
+   margin-left: -20%;
+   margin-top: -17.6%;
+   padding-bottom: 5px;
+}
+.passtemp .front .header{
+   @apply(--layout-horizontal);
+   margin-top: -3%;
+}
+.passtemp .front .header .logo{
+
+}
+.passtemp .front .header .heading{
+    width: 80%;
+    height: 7%;
+    margin-top: -20%;
+    margin-left: 14.5%;
+    text-align: center;
+}
+.passtemp .front .header .title{
+    font-size: small;
+    font-weight: 300;
+    margin-top: 60.75%;
+    margin-left: -90%;
+}
+.passtemp .front .header .address{
+    font-size: xx-small;
+    font-weight: 100;
+    width: 140%;
+    margin-left: -63%;
+}
+.passtemp .front .body1{
+
+    margin-top: 0%;
+    text-align: center;
+    @apply(--layout-horizontal);
+}
+.passtemp .front .body2{
+    @apply(--layout-horizontal);
+    margin-top: 10%;
+
+}
+.passtemp .front .body2 .studimg{
+    @apply(--layout-center);
+    text-align: center;
+    @apply(--layout-vertical);
+}
+
+.passtemp .front .body2 .studetail{
+    font-size: large;
+    font-weight: bolder;
+    text-align: center;
+    @apply(--layout-center);
+    margin-top: 50%;
+    margin-left: -47%;
+}
+.passtemp .back{
+    border-radius: 15px;
+   border-color: #888888;
+   border-style: dotted;
+   border-width: 2px;
+   width: 5.5cm;
+  height: 8.46cm;
+  margin-left: 82%;
+margin-top: -157%;
+}
+.passtemp .back .body3{
+margin-top: 6%;
+margin-left: 2%;
+
+}
+.temp{
+  margin-top: 19.25%;
+  padding-bottom: 2%;
+}
+
+</style>
+<div class="temp">
+    <div class="student-image" >
+      <img id="imgRes">
+    </div>
+    <div class="passtemp">
+      <div id="canvas" style="background-image:url(fimage/1.jpg)">
+
+        <div class="front">
+
+
+          <div class="header">
+            <div class="logo"><img style="width: 25%; height: 14%; margin-top: 40%; margin-left: 5%;" src="../../images/zeesouth.png"/></div>
+            <div class="heading">
+              <div class="title">{{schoolname}}</div>
+              <div class="address">{{schooladdr}}</div>
+            </div>
+          </div>
+          <hr></hr>
+          <div class="body2">
+            <div class="studimg">
+              <img style="min-height: 12%;min-width: 18%; margin-top: 5%; margin-left: 70%; width: 50%;border: 1px solid;"src="images/{{sid}}.jpg" alt="Paste photo here"/>
+            </div>
+            <div class="studetail">
+              <p style="font-size: 16px;">{{studname}}</p>
+              <p style="font-size: 16px;">{{stnd}} - {{sec}}</p>
+              <p style="font-size: 16px;">Zone - {{zone}}</p>
+            </div>
+          </div>
+
+        </div>
+
+        <div class="back">
+         <div class="body3">
+        <div class="backimg">
+        <div class="backdetails">
+                  <p style="font-size: 13px;"><strong>Address:</strong>
+                  S/O,{{parent}} ,
+                  {{address1}},
+                  {{address2}},
+                  {{address3}}, 
+                  {{town}}-{{pin}}.</p>
+                  <hr></hr>
+                  <div><p style="margin: 4px 0 4px 0; display: inline;font-size: 13px;font-weight: bold;">Pickup Route:</p><p style="margin: 4px 0 4px 0;text-transform: capitalize; display: inline;font-size: 12px;">{{pickuprout}}</p></div>
+                  <div><p style="margin: 4px 0 4px 0; display: inline;font-weight: bold;font-size: 13px;">Pickup Point:</p><p style="margin: 4px 0 4px 0;text-transform: capitalize; display: inline;font-size: 12px;">{{pickup}}</p></div>
+                  <div><p style="margin: 4px 0 4px 0; display: inline;font-weight: bold;font-size: 13px;">Drop Route:</p><p style="margin: 4px 0 4px 0;text-transform: capitalize; display: inline;font-size: 12px;">{{droprout}}</p></div>
+                  <div><p style="margin: 4px 0 4px 0; display: inline;font-weight: bold;font-size: 13px;">Drop Point:</p><p style="margin: 4px 0 4px 0;text-transform: capitalize; display: inline;font-size: 12px;">{{drop}}</p></div>
+                  <hr></hr>
+                  <div><strong>Parents Mob:</strong> {{mobno}}</div>
+                  <hr></hr>
+                 <div><strong>Transport Coordinator no:</strong><br>{{conumber}}</div>
+        </div>
+        </div>
+        </div>
+
+        </div>
+      </div>
+      </div>
+    </div>
+  </template>
+  <script>
+  (function() {
+    'use strict';
+
+    Polymer({
+      is: 'passtemplate-get-item-card',
+
+      properties: {
+        foo: {
+          type: String,
+          value: 'passtemplate-get-item-card',
+          notify: true
+        }
+      }
+    });
+  })();
+  </script>
+</dom-module>

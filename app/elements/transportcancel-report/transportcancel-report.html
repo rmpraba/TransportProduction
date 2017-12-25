@@ -1,0 +1,69 @@
+<!--
+@license
+Copyright (c) 2015 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<link rel="import" href="..\..\bower_components/polymer/polymer.html">
+
+<dom-module id="transportcancel-report">
+  <template>
+    <style>
+      :host {
+        display: block;
+      }
+      #btn1
+      {
+        margin-top: 3%;
+      }
+    </style>
+    <br/>
+    <br/>
+    <br/>
+    <center> 
+    <table id="TransportcancelTable" border="1">
+      <tr><th>Student ID</th><th>Name</th><th>Used Month</th><th>Cancelled Date</th></tr>
+      <template  is="dom-repeat" items="{{canceltransarr}}" as="view">
+        <!-- <excelreportcash-card studentid="{{view.student_id}}" studentname="{{view.student_name}}" standard="{{view.standard}}" section ="{{view.section}}" receiptno="{{view.receipt_no}}" feepaid="{{view.installment_1}}"></excelreportcash-card> -->
+        <tr><td>{{view.student_id}}</td><td>{{view.student_name}}</td><td>{{view.months_used}}</td><td>{{view.cancelled_date}}</td>
+        </tr>
+      </template>
+      </table>
+        <input type="button" id="btn1" onclick="tableToExcel('TransportcancelTable', 'TransportCancel Report')" value="Export to Excel">
+        </center>
+  </template>
+   <script type="text/javascript">
+var tableToExcel = (function() {
+  var uri = 'data:application/vnd.ms-excel;base64,'
+    , template = '<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40"><head><!--[if gte mso 9]><xml><x:ExcelWorkbook><x:ExcelWorksheets><x:ExcelWorksheet><x:Name>{worksheet}</x:Name><x:WorksheetOptions><x:DisplayGridlines/></x:WorksheetOptions></x:ExcelWorksheet></x:ExcelWorksheets></x:ExcelWorkbook></xml><![endif]--></head><body><table>{table}</table></body></html>'
+    , base64 = function(s) { return window.btoa(unescape(encodeURIComponent(s))) }
+    , format = function(s, c) { return s.replace(/{(\w+)}/g, function(m, p) { return c[p]; }) }
+  return function(table, name) {
+    if (!table.nodeType) table = document.getElementById(table)
+    var ctx = {worksheet: name || 'Worksheet', table: table.innerHTML}
+    window.location.href = uri + base64(format(template, ctx))
+  }
+})()
+</script>
+  <script>
+  (function() {
+    'use strict';
+
+    Polymer({
+      is: 'transportcancel-report',
+
+      properties: {
+        foo: {
+          type: String,
+          value: 'transportcancel-report',
+          notify: true
+        }
+      }
+    });
+  })();
+  </script>
+</dom-module>
