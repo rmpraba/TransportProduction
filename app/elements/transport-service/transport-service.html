@@ -2116,7 +2116,7 @@
               obj.schol=sessionStorage.getItem("sch");
             obj.academic_year=localStorage.getItem("curr_sess_academicyear");
               this.getpassnameparam=obj;
-              alert(JSON.stringify(obj));
+            //  alert(JSON.stringify(obj));
               this.$.getpassnameajax.generateRequest();
       },
        getfeedetail:function(studid){
@@ -3369,7 +3369,7 @@ document.querySelector('cqreceipt-card').receiptarr=recarr1;
       },
       attendancereportResponse:function(e)
       {
-        alert(JSON.stringify(e.detail.response.returnval));
+    //    alert(JSON.stringify(e.detail.response.returnval));
         var attendancearr=e.detail.response.returnval;
                    var obj={};
         document.querySelector('attendance-card').attendancearr=attendancearr;
@@ -3414,7 +3414,7 @@ document.querySelector('cqreceipt-card').receiptarr=recarr1;
                 var studentidz=result[i].student_id;
                obj.studentidz=studentidz.replace(/[^\w\s]/gi,'');
                temarr.push(obj);}
-             alert(JSON.stringify(temarr));
+             //alert(JSON.stringify(temarr));
           
 
             document.querySelector('addattendence-card').attendancearr=temarr;
@@ -3435,7 +3435,7 @@ document.querySelector('cqreceipt-card').receiptarr=recarr1;
                 obj.studentidz=studentidz.replace(/[^\w\s]/gi,'');;
                temarr.push(obj);
            }
-             alert(JSON.stringify(temarr));
+       //      alert(JSON.stringify(temarr));
           
        document.querySelector('addattendence-card').attendancearr=temarr;
         }
