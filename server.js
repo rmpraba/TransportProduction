@@ -1636,7 +1636,10 @@ app.post('/approval-card',  urlencodedParser,function (req, res)
 app.post('/name',  urlencodedParser,function (req, res){
 
   var schoolx=req.query.schol;
-       connection.query('select student_id, student_name from student_details join student_fee on student_fee.student_id=student_details.id and student_details.transport_required="yes" and student_details.school_id=?',[schoolx],
+
+  console.log("select student_fee.student_id, student_fee.student_name from student_details join student_fee on student_fee.student_id=student_details.id and student_details.transport_required='yes' and student_details.school_id='"+req.query.schol+"'");
+  console.log("-----------------------");
+       connection.query('select student_fee.student_id, student_fee.student_name from student_details join student_fee on student_fee.student_id=student_details.id and student_details.transport_required="yes" and student_details.school_id=?',[schoolx],
         function(err, rows)
         {
           if(err){

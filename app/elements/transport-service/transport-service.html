@@ -1851,10 +1851,13 @@
         var obj={"schol":""}
         obj.schol=sessionStorage.getItem("sch");
         this.nameparam=obj;
+     //   alert(JSON.stringify(obj));
         this.$.nameajax.generateRequest();
       },
       nameResponse:function(e){
         var nameitem=e.detail.response.returnval;
+      //  alert(JSON.stringify(nameitem));
+
         document.querySelector('cancellation-card').autocompletename(nameitem);
       },   
       transportrequiredstatusResponse:function(e){
