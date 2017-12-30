@@ -2402,8 +2402,8 @@ app.post('/checkchequedetails',  urlencodedParser,function (req, res)
   var startdate=req.query.fromdate;
   var todate=req.query.todate1;
 console.log(startdate);
-console.log(todate);
-var qur="SELECT * from cheque_details where cheque_status='processing' and academic_year= and '"+req.query.academic_year+"' and school_id='"+req.query.schol+"' and STR_TO_DATE(cheque_date,'%m/%d/%Y') between  STR_TO_DATE('"+req.query.fromdate+"','%m/%d/%Y') and STR_TO_DATE('"+req.query.todate1+"','%m/%d/%Y')";
+console.log("SELECT * from cheque_details where cheque_status='processing' and academic_year= '"+req.query.academic_year+"' and school_id='"+req.query.schol+"' and STR_TO_DATE(cheque_date,'%m/%d/%Y') between  STR_TO_DATE('"+req.query.fromdate+"','%m/%d/%Y') and STR_TO_DATE('"+req.query.todate1+"','%m/%d/%Y')");
+var qur="SELECT * from cheque_details where cheque_status='processing' and academic_year='"+req.query.academic_year+"' and school_id='"+req.query.schol+"' and STR_TO_DATE(cheque_date,'%m/%d/%Y') between  STR_TO_DATE('"+req.query.fromdate+"','%m/%d/%Y') and STR_TO_DATE('"+req.query.todate1+"','%m/%d/%Y')";
        connection.query(qur,
         
     function(err, rows)

@@ -1332,7 +1332,7 @@ checkchequebyname:function(stnamee)
 				var cstatus;
 				var chequedetail=e.detail.response.returnval;
 
-			// alert('s'+JSON.stringify(chequedetail));
+		    alert('s'+JSON.stringify(chequedetail));
 				var d=new Date();
 				for(var i=0;i<chequedetail.length;i++)
 				{
@@ -1356,7 +1356,8 @@ checkchequebyname:function(stnamee)
 						obj.cstatus=cstatus;
 						obj.installtype=chequedetail[i].installtype;
 						chequedetailarr.push(obj);
-				}
+			  	}
+		      alert(JSON.stringify(chequedetailarr));
 
 				document.querySelector('chequedetail-card').chequearr=chequedetailarr;
 				document.querySelector('chequedetail-card').Fnchequedetail(chequedetail);
