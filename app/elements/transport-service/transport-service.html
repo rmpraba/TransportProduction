@@ -2116,7 +2116,7 @@
               obj.schol=sessionStorage.getItem("sch");
             obj.academic_year=localStorage.getItem("curr_sess_academicyear");
               this.getpassnameparam=obj;
-              //alert(JSON.stringify(obj));
+              alert(JSON.stringify(obj));
               this.$.getpassnameajax.generateRequest();
       },
        getfeedetail:function(studid){
@@ -2141,9 +2141,9 @@
         this.$.getzonedetailajax.generateRequest();
       },
       getzonedetailResponse:function(e){
-       //alert(JSON.stringify(e.detail.response.returnval)); 
+      alert(JSON.stringify(e.detail.response.returnval)); 
         var zonename=e.detail.response.returnval[0].zone_name;
-       // var conumber=e.detail.response.returnval[0].conumber;
+       var conumber=e.detail.response.returnval[0].conumber;
         document.querySelector('studentpass-card').zone=zonename.toLowerCase();
          document.querySelector('studentpass-card').conumber=conumber;
 
@@ -2761,14 +2761,14 @@ document.querySelector('cqreceipt-card').receiptarr=recarr1;
           this.$.getparentinfoajax.generateRequest();
 
 
-          this.getpassclassurl=sessionStorage.getItem("addrinfo")+"/getpassclass";
+         /* this.getpassclassurl=sessionStorage.getItem("addrinfo")+"/getpassclass";
           var obj3={"class":"","schol":"","academic_year":""}
           obj3.class=classid;
           obj3.schol=sessionStorage.getItem("sch");
           obj3.academic_year=localStorage.getItem("curr_sess_academicyear");
     
           this.getpassclassparam=obj3;
-          this.$.getpassclassajax.generateRequest();
+          this.$.getpassclassajax.generateRequest();*/
       },
        getpassdetailResponse:function(e){
         var pp=e.detail.response.returnval[0].pickup_point;
@@ -2829,7 +2829,7 @@ document.querySelector('cqreceipt-card').receiptarr=recarr1;
         getpassclassResponse:function(e){
           var cordinatono=e.detail.response.returnval[0].cordinator_no;
           document.querySelector('studentpass-card').cordinatono=cordinatono;
-        },
+         },
         getparentinfoResponse:function(e){
    //alert(JSON.stringify(e.detail.response.returnval));
           var dad1=e.detail.response.returnval[0].parent_name;

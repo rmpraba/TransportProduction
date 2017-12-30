@@ -279,6 +279,7 @@
   
         },
       selectname:function(){
+       // alert("1");
         this.selectnameurl = sessionStorage.getItem("addrinfo")+"/selectnameforpoint";
         var obj={"schol":"","academic_year":""}
         obj.schol=sessionStorage.getItem("sch");
@@ -304,7 +305,8 @@
          }
          } 
          // alert(studarr.length);
-       //  alert(JSON.stringify(nameitem));
+   //  alert(JSON.stringify(studarr));
+   //  alert(JSON.stringify(nameitem));
          document.querySelector('mapstudenttopoint-card').autocompletename(studarr);
          
          document.querySelector('mapstudenttopoint-card').spinner();
